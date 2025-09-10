@@ -1,0 +1,19 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "static/uploads"   # Nơi lưu file ảnh trên repo
+public_folder: "/uploads"        # Đường dẫn để hiển thị ảnh trên site
+
+collections:
+  - name: "posts"
+    label: "Bài viết"
+    folder: "content/posts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Tiêu đề", name: "title", widget: "string" }
+      - { label: "Ngày", name: "date", widget: "datetime" }
+      - { label: "Mô tả ngắn", name: "description", widget: "text", required: false }
+      - { label: "Nội dung", name: "body", widget: "markdown" }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
