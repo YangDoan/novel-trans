@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>{{ .Site.Title }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script>
-    (function() {
-      // Kiểm tra token trong query string (?invite_token=xxx)
-      const query = window.location.search;
-      // Kiểm tra token trong hash (#invite_token=xxx)
-      const hash = window.location.hash;
-
-      if (query.includes("invite_token")) {
-        window.location.replace("/admin/" + query);
-      } else if (hash.includes("invite_token")) {
-        window.location.replace("/admin/" + hash);
+    (function () {
+      // Bắt invite_token ở ?... hoặc #...
+      var q = window.location.search || "";
+      var h = window.location.hash || "";
+      if (q.indexOf("invite_token=") !== -1) {
+        window.location.replace("/admin/" + q);
+      } else if (h.indexOf("invite_token=") !== -1) {
+        window.location.replace("/admin/" + h);
       }
     })();
   </script>
 </head>
 <body>
-  <main>
-    <h1>Welcome to {{ .Site.Title }}</h1>
-    <p>If you are setting up your account, you will be redirected automatically...</p>
-  </main>
+  <h1>{{ .Site.Title }}</h1>
+  <p>Welcome! If you came from an invite email, you’ll be redirected to /admin…</p>
 </body>
 </html>
