@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Novel Translations</title>
+  <script>
+    // Nếu URL có invite_token mà đang ở trang chủ -> redirect sang /admin
+    if (window.location.search.includes("invite_token")) {
+      window.location.href = "/admin/" + window.location.search;
+    }
+  </script>
+</head>
+<body>
+  <h1>Welcome to Novel Translations</h1>
+  <p>If you are setting up your account, you will be redirected shortly...</p>
+</body>
+</html>
