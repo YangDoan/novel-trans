@@ -1,11 +1,27 @@
-<script>
-  // Nếu URL chứa invite_token ở query (?invite_token) hoặc hash (#invite_token)
-  if (window.location.search.includes("invite_token") || window.location.hash.includes("invite_token")) {
-    // Nếu nằm trong hash (#invite_token) thì chuyển hash sang admin
-    if (window.location.hash.includes("invite_token")) {
-      window.location.href = "/admin/" + window.location.hash;
-    } else {
-      window.location.href = "/admin/" + window.location.search;
-    }
-  }
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ .Site.Title }}</title>
+  <script>
+    (function() {
+      // Kiểm tra token trong query string (?invite_token=xxx)
+      const query = window.location.search;
+      // Kiểm tra token trong hash (#invite_token=xxx)
+      const hash = window.location.hash;
+
+      if (query.includes("invite_token")) {
+        window.location.replace("/admin/" + query);
+      } else if (hash.includes("invite_token")) {
+        window.location.replace("/admin/" + hash);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <main>
+    <h1>Welcome to {{ .Site.Title }}</h1>
+    <p>If you are setting up your account, you will be redirected automatically...</p>
+  </main>
+</body>
+</html>
