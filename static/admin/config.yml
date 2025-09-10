@@ -2,16 +2,15 @@ backend:
   name: git-gateway
   branch: main
 
-# Mặc định upload ảnh vào đây (có thể dùng cho mọi field nếu không override)
+# Mặc định upload ảnh vào đây (các field khác có thể override media_folder riêng)
 media_folder: "static/uploads"
 public_folder: "/uploads"
 
-# Tùy chọn giao diện
 locale: "vi"
-publish_mode: editorial_workflow   # có trạng thái Draft/Review/Publish (có thể đổi sang simple)
+publish_mode: editorial_workflow  # có Draft/Review/Publish; đổi sang 'simple' nếu muốn
 
 collections:
-  # Bộ sưu tập bài viết chung (tin/bài sưu tầm, thông báo, note…)
+  # 1) Bài viết chung (tin tức, sưu tầm, thông báo…)
   - name: "posts"
     label: "Bài viết"
     folder: "content/posts"
@@ -22,15 +21,12 @@ collections:
       - { label: "Ngày", name: "date", widget: "datetime" }
       - { label: "Mô tả ngắn", name: "description", widget: "text", required: false }
 
-      # Ảnh đại diện (mặc định vào /uploads)
       - label: "Ảnh đại diện"
         name: "thumbnail"
         widget: "image"
         required: false
-        allow_multiple: false
         choose_url: true
 
-      # Bộ ảnh (gallery)
       - label: "Bộ ảnh (gallery)"
         name: "gallery"
         widget: "list"
@@ -43,7 +39,6 @@ collections:
           choose_url: true
           required: false
 
-      # Video (lưu riêng vào /videos)
       - label: "File video"
         name: "video"
         widget: "file"
@@ -51,7 +46,6 @@ collections:
         media_folder: "static/videos"
         public_folder: "/videos"
 
-      # Âm thanh (mp3) (lưu vào /audio)
       - label: "File audio (mp3)"
         name: "audio"
         widget: "file"
@@ -59,7 +53,6 @@ collections:
         media_folder: "static/audio"
         public_folder: "/audio"
 
-      # Tài liệu PDF (lưu vào /docs)
       - label: "Tài liệu đính kèm (PDF)"
         name: "pdf"
         widget: "file"
@@ -67,8 +60,90 @@ collections:
         media_folder: "static/docs"
         public_folder: "/docs"
 
-      # Nội dung chính (Markdown)
       - { label: "Nội dung", name: "body", widget: "markdown" }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
 
-      # Tags
+  # 2) Tác phẩm (truyện)
+  - name: "works"
+    label: "Tác phẩm"
+    folder: "content/works"
+    create: true
+    slug: "{{slug}}"        # ví dụ: vo-luyen-dinh-phong
+    fields:
+      - { label: "Tên tác phẩm", name: "title", widget: "string" }
+      - { label: "Ngày", name: "date", widget: "datetime" }
+      - { label: "Tác giả gốc", name: "original_author", widget: "string", required: false }
+      - { label: "Dịch giả", name: "translator", widget: "string", required: false }
+      - { label: "Tình trạng", name: "status", widget: "select", options: ["Đang dịch","Tạm dừng","Hoàn thành"], default: "Đang dịch" }
+      - { label: "Thể loại", name: "genres", widget: "list", required: false }
+      - { label: "Mô tả/giới thiệu", name: "description", widget: "text", required: false }
+
+      - label: "Bìa truyện"
+        name: "cover"
+        widget: "image"
+        required: false
+        media_folder: "static/uploads"
+        public_folder: "/uploads"
+
+      - label: "Ảnh giới thiệu"
+        name: "images"
+        widget: "list"
+        required: false
+        field:
+          label: "Ảnh"
+          name: "image"
+          widget: "image"
+          media_folder: "static/uploads"
+          public_folder: "/uploads"
+
+      - { label: "Ghi chú nội bộ", name: "note", widget: "text", required: false }
+
+      # Nội dung giới thiệu chi tiết (tùy chọn)
+      - { label: "Nội dung", name: "body", widget: "markdown", required: false }
+
+  # 3) Chương
+  - name: "chapters"
+    label: "Chương"
+    folder: "content/chapters"
+    create: true
+    # file name: <work-slug>-c<so-chuong>-<slug>.md (giữ đơn giản)
+    slug: "{{fields.work}}-c{{chapter_number}}-{{slug}}"
+    fields:
+      # gắn chương vào Tác phẩm bằng "relation"
+      - label: "Tác phẩm"
+        name: "work"
+        widget: "relation"
+        collection: "works"
+        search_fields: ["title", "slug"]
+        value_field: "slug"
+        display_fields: ["title"]
+        hint: "Chọn tác phẩm mà chương này thuộc về"
+
+      - { label: "Số chương", name: "chapter_number", widget: "number", value_type: "int", min: 1 }
+      - { label: "Tiêu đề chương", name: "title", widget: "string" }
+      - { label: "Ngày", name: "date", widget: "datetime" }
+      - { label: "Dịch giả", name: "translator", widget: "string", required: false }
+
+      - label: "Audio chương (mp3)"
+        name: "audio"
+        widget: "file"
+        required: false
+        media_folder: "static/audio"
+        public_folder: "/audio"
+
+      - label: "Video chương"
+        name: "video"
+        widget: "file"
+        required: false
+        media_folder: "static/videos"
+        public_folder: "/videos"
+
+      - label: "PDF đính kèm"
+        name: "pdf"
+        widget: "file"
+        required: false
+        media_folder: "static/docs"
+        public_folder: "/docs"
+
+      - { label: "Nội dung chương (markdown)", name: "body", widget: "markdown" }
       - { label: "Tags", name: "tags", widget: "list", required: false }
