@@ -2,18 +2,73 @@ backend:
   name: git-gateway
   branch: main
 
-media_folder: "static/uploads"   # Nơi lưu file ảnh trên repo
-public_folder: "/uploads"        # Đường dẫn để hiển thị ảnh trên site
+# Mặc định upload ảnh vào đây (có thể dùng cho mọi field nếu không override)
+media_folder: "static/uploads"
+public_folder: "/uploads"
+
+# Tùy chọn giao diện
+locale: "vi"
+publish_mode: editorial_workflow   # có trạng thái Draft/Review/Publish (có thể đổi sang simple)
 
 collections:
+  # Bộ sưu tập bài viết chung (tin/bài sưu tầm, thông báo, note…)
   - name: "posts"
     label: "Bài viết"
     folder: "content/posts"
     create: true
-    slug: "{{slug}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { label: "Tiêu đề", name: "title", widget: "string" }
       - { label: "Ngày", name: "date", widget: "datetime" }
       - { label: "Mô tả ngắn", name: "description", widget: "text", required: false }
+
+      # Ảnh đại diện (mặc định vào /uploads)
+      - label: "Ảnh đại diện"
+        name: "thumbnail"
+        widget: "image"
+        required: false
+        allow_multiple: false
+        choose_url: true
+
+      # Bộ ảnh (gallery)
+      - label: "Bộ ảnh (gallery)"
+        name: "gallery"
+        widget: "list"
+        required: false
+        summary: "{{fields.image}}"
+        field:
+          label: "Ảnh"
+          name: "image"
+          widget: "image"
+          choose_url: true
+          required: false
+
+      # Video (lưu riêng vào /videos)
+      - label: "File video"
+        name: "video"
+        widget: "file"
+        required: false
+        media_folder: "static/videos"
+        public_folder: "/videos"
+
+      # Âm thanh (mp3) (lưu vào /audio)
+      - label: "File audio (mp3)"
+        name: "audio"
+        widget: "file"
+        required: false
+        media_folder: "static/audio"
+        public_folder: "/audio"
+
+      # Tài liệu PDF (lưu vào /docs)
+      - label: "Tài liệu đính kèm (PDF)"
+        name: "pdf"
+        widget: "file"
+        required: false
+        media_folder: "static/docs"
+        public_folder: "/docs"
+
+      # Nội dung chính (Markdown)
       - { label: "Nội dung", name: "body", widget: "markdown" }
+
+      # Tags
       - { label: "Tags", name: "tags", widget: "list", required: false }
